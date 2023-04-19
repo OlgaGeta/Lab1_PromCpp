@@ -86,6 +86,7 @@ TEST(FileDoesntExist, Writing) {
 	EXPECT_EQ(str, test_string);
 }
 
+
 TEST(FileExist, Writing) {
 	std::ofstream output_file("testfile.txt");
 
@@ -154,4 +155,91 @@ TEST(FileExist, CloseReading) {
 	f.close(); 
 
 	EXPECT_FALSE(f.is_open()); 
+}
+
+
+//origin tests
+TEST(FileDoesntExist, CloseWriting) {
+	remove("testfile.txt");
+
+	File f("testfile.txt", "w");
+	f.close();
+
+	EXPECT_FALSE(f.is_open());
+}
+
+TEST(FileExist, CloseReading) {
+	std::ofstream file("testfile.txt");
+
+	File f("testfile.txt", "r");
+	f.close();
+
+	EXPECT_FALSE(f.is_open());
+}
+
+TEST(FileExist, CloseWriting) {
+	File f("testfile.txt", "w");
+	f.close();
+
+	EXPECT_FALSE(f.is_open());
+}
+
+TEST(FileExistEmpty, Reading) {
+	std::ofstream file("testfile.txt");
+	file.close();
+
+	File f("testfile.txt", "r");
+
+	std::string str;
+	f >> str;
+
+	EXPECT_EQ(str, "");
+	EXPECT_FALSE(f.is_correct());
+}
+TEST(FileExistNonEmpty, Reading) {
+	std::ofstream file("testfile.txt");
+
+	std::string test_string = "123";
+	file << test_string;
+
+	file.close();
+
+	File f("testfile.txt", "r");
+
+	std::string str;
+
+	f >> str;
+
+	EXPECT_EQ(str, test_string);
+	EXPECT_TRUE(f.is_correct());
+}
+
+TEST(FileDoesntExist, DestructorWriting) {
+	remove("testfile.txt");
+
+	File f("testfile.txt", "w");
+	f.~File();
+
+	EXPECT_FALSE(f.is_open());
+	EXPECT_FALSE(f.is_correct());
+}
+
+TEST(FileExist, DestructorWriting) {
+	std::ofstream file("testfile.txt");
+
+	File f("testfile.txt", "w");
+	f.~File();
+
+	EXPECT_FALSE(f.is_open());
+	EXPECT_FALSE(f.is_correct());
+}
+
+TEST(FileExist, DestructorReading) {
+	std::ofstream file("testfile.txt");
+
+	File f("testfile.txt", "r");
+	f.~File();
+
+	EXPECT_FALSE(f.is_open());
+	EXPECT_FALSE(f.is_correct());
 }
