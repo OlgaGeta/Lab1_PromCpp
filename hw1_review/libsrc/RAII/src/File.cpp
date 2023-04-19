@@ -36,6 +36,7 @@ bool File::is_correct() const {
 void File::close() {
 	if (fileHandle_) {
 		fclose(fileHandle_);
+		fileHandle_ = nullptr;
 		strcpy(mode_, "");
 		isCorrect_ = false;
 	}
@@ -72,7 +73,7 @@ File& File::operator>>(std::string& str) {
 		return *this;
 	}
 
-	if (!isCorrect_)
+	if (isCorrect_)
 	{
 		char symbol = fgetc(fileHandle_);
 

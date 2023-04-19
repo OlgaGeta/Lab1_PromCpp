@@ -7,7 +7,9 @@ def test_write_and_read_text(language, text):
         'file.txt',
         'w',
         text,
-        'y'
+        'y',
+        'file.txt',
+        'r'
     ]
 
     # Run the C++ program and pass the input lines as input

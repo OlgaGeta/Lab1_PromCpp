@@ -120,3 +120,38 @@ TEST(FileDoesntExist, DestructorReading) {
 	EXPECT_FALSE(f.is_open());
 	EXPECT_FALSE(f.is_correct());
 }
+
+// section of reading tests, stands for fix !Correct
+
+TEST(FileExistButEmpty, Reading) { // checking empty file
+	std::string data_from_file;
+	std::ofstream file("test.txt");
+	file.close(); 
+	File f("test.txt", "r");
+
+	f >> data_from_file;
+	EXPECT_EQ(data_from_file, "");
+	EXPECT_FALSE(f.is_correct());
+}
+
+TEST(FileExistNonEmpty, Reading) { // checking file with some stuff
+	std::string data_from_file; 
+	std::ofstream file("test.txt"); 
+	std::string data_to_file = "prekol :clown_face"; 
+	file << data_to_file; 
+	file.close(); 
+	File f("test.txt", "r"); 
+
+	f >> data_from_file; 
+	EXPECT_EQ(data_from_file, data_to_file); 
+	EXPECT_TRUE(f.is_correct()); 
+}
+
+// section of nullptr for FILE* test, stands for fix 39: fileHandle_ = nullptr;
+TEST(FileExist, CloseReading) { 
+	std::ofstream file("test.txt"); 
+	File f("test.txt", "r"); 
+	f.close(); 
+
+	EXPECT_FALSE(f.is_open()); 
+}
